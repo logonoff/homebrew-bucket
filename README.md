@@ -7,7 +7,7 @@ Bucket for my apps
 ### Install
 
 ```
-brew tap logonoff/homebrew-bucket
+brew tap logonoff/bucket
 ```
 
 ### Available Casks
