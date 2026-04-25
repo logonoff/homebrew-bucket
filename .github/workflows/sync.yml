@@ -1,0 +1,59 @@
+name: Sync Manifests
+
+on:
+  repository_dispatch:
+    types: [sync]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download manifests
+        run: |
+          jq -c '.[]' apps.json | while read -r entry; do
+            url=$(echo "$entry" | jq -r '.pullFrom')
+            dest=$(echo "$entry" | jq -r '.downloadTo')
+            mkdir -p "$(dirname "$dest")"
+            curl -fsSL "$url" -o "$dest"
+            echo "Downloaded $url → $dest"
+          done
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          ADDITIONS=$(git diff --name-only | while read -r file; do
+            content=$(base64 -w0 < "$file")
+            printf '{"path":"%s","contents":"%s"}' "$file" "$content"
+          done | jq -s '.')
+
+          HEAD_OID=$(gh api graphql \
+            -f query='{ repository(owner:"logonoff", name:"homebrew-bucket") {
+              ref(qualifiedName:"refs/heads/main") { target { oid } }
+            }}' --jq '.data.repository.ref.target.oid')
+
+          jq -n \
+            --arg oid "$HEAD_OID" \
+            --argjson additions "$ADDITIONS" \
+            '{
+              query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }",
+              variables: {
+                input: {
+                  branch: { repositoryNameWithOwner: "logonoff/homebrew-bucket", branchName: "main" },
+                  expectedHeadOid: $oid,
+                  message: { headline: "chore: sync manifest" },
+                  fileChanges: { additions: $additions }
+                }
+              }
+            }' | gh api graphql --input -
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

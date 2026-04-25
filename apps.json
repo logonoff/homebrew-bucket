@@ -1,0 +1,6 @@
+[
+    {
+        "pullFrom": "https://raw.githubusercontent.com/logonoff/superopt/refs/heads/main/Casks/superopt.rb",
+        "downloadTo": "Casks/superopt.rb"
+    }
+]
