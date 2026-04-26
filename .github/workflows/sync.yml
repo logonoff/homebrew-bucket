@@ -31,6 +31,22 @@ jobs:
             exit 0
           fi
 
+          UPDATES=$(git diff --name-only | while read -r file; do
+            name=$(basename "${file%.*}")
+            if [[ "$file" == *.rb ]]; then
+              ver=$(grep -m1 'version "' "$file" | sed 's/.*version "\(.*\)"/\1/')
+            elif [[ "$file" == *.json ]]; then
+              ver=$(jq -r '.version' "$file")
+            fi
+            if [[ -n "$ver" ]]; then
+              echo "$name to $ver"
+            else
+              echo "$name"
+            fi
+          done | paste -sd ', ' -)
+
+          HEADLINE="chore: update $UPDATES"
+
           ADDITIONS=$(git diff --name-only | while read -r file; do
             content=$(base64 -w0 < "$file")
             printf '{"path":"%s","contents":"%s"}' "$file" "$content"
@@ -43,6 +59,7 @@ jobs:
 
           jq -n \
             --arg oid "$HEAD_OID" \
+            --arg headline "$HEADLINE" \
             --argjson additions "$ADDITIONS" \
             '{
               query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }",
@@ -50,7 +67,7 @@ jobs:
                 input: {
                   branch: { repositoryNameWithOwner: "logonoff/homebrew-bucket", branchName: "main" },
                   expectedHeadOid: $oid,
-                  message: { headline: "chore: sync manifest" },
+                  message: { headline: $headline },
                   fileChanges: { additions: $additions }
                 }
               }
