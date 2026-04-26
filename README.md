@@ -8,11 +8,17 @@ Scoop bucket / Homebrew tap for my stuff
 brew tap logonoff/bucket
 ```
 
-### Available Casks
+### Available casks
 
 | Cask | Source |
 | ---- | ------ |
-| `superopt` | [logonoff/superopt](https://github.com/logonoff/superopt) |
+| `superopt` | [superopt](https://github.com/logonoff/superopt) |
+
+### Available formulae
+
+| Cask | Source |
+| ---- | ------ |
+| `awakeonlan` | [awake-on-lan](https://github.com/logonoff/awake-on-lan) |
 
 ## Scoop
 
@@ -20,11 +26,11 @@ brew tap logonoff/bucket
 scoop bucket add logonoff https://github.com/logonoff/homebrew-bucket
 ```
 
-### Available Apps
+### Available apps
 
 | App | Source |
 | --- | ------ |
-| `dreamscape-wmp` | [logonoff/dreamscape-wmp](https://github.com/logonoff/dreamscape-wmp) |
-| `persistentaccent` | [logonoff/persistentaccent](https://github.com/logonoff/persistentaccent) |
-| `vs-rename` | [logonoff/vs-rename](https://github.com/logonoff/vs-rename) |
-| `windynworkspaces` | [logonoff/windynworkspaces](https://github.com/logonoff/windynworkspaces) |
+| `dreamscape-wmp` | [dreamscape-wmp](https://github.com/logonoff/dreamscape-wmp) |
+| `persistentaccent` | [persistentaccent](https://github.com/logonoff/persistentaccent) |
+| `vs-rename` | [vs-rename](https://github.com/logonoff/vs-rename) |
+| `windynworkspaces` | [windynworkspaces](https://github.com/logonoff/windynworkspaces) |
