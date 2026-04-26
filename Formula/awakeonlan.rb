@@ -3,7 +3,7 @@ class Awakeonlan < Formula
   homepage "https://github.com/logonoff/awake-on-lan"
   version "0.5.2"
   url "https://github.com/logonoff/awake-on-lan/releases/download/#{version}/awakeonlan-#{version}.tar.xz"
-  sha256 "f52c9d3494f62cf56ab1f760b9d04561a1438307f090dfadf9e798d364508461"
+  sha256 "b87fd03b03e9407619c9343ea6266b82bd719f027d95296b01cc51ae482cafd4"
   license "GPL-3.0-or-later"
 
   depends_on "desktop-file-utils" => :build
@@ -22,6 +22,7 @@ class Awakeonlan < Formula
     system "meson", "setup", "build", *std_meson_args
     system "meson", "compile", "-C", "build", "--verbose"
     system "meson", "install", "-C", "build"
+    rm share/"glib-2.0/schemas/gschemas.compiled"
   end
 
   def post_install
