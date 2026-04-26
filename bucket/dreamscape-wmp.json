@@ -1,7 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/ScoopInstaller/scoop/refs/heads/master/schema.json",
     "version": "1.08",
-    "description": " Unobtrusive Windows 11-style skin for Windows Media Player featuring album art",
+    "description": "Unobtrusive Windows 11-style skin for Windows Media Player featuring album art",
     "homepage": "https://github.com/logonoff/dreamscape-wmp",
     "notes": "Global installs not supported",
     "architecture": {
