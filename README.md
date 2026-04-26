@@ -19,7 +19,7 @@ brew tap logonoff/bucket
 | Cask | Source |
 | ---- | ------ |
 | `awakeonlan` | [awake-on-lan](https://github.com/logonoff/awake-on-lan) |
-| `vs-rename` | [vs-rename](https://github.com/logonoff/vs-rename) |
+| `ren-vs` | [vs-rename](https://github.com/logonoff/vs-rename) |
 
 ## Scoop
 

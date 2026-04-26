@@ -1,4 +1,4 @@
-class VsRename < Formula
+class RenVs < Formula
   include Language::Python::Virtualenv
 
   desc "python script that lets you mass-edit file names with vscode"
