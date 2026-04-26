@@ -18,6 +18,6 @@ class VsRename < Formula
   end
 
   caveats <<~EOS
-    #{token} is no longer actively maintained and might not work
+    #{name} is no longer actively maintained and might not work
   EOS
 end
