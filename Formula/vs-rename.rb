@@ -17,7 +17,9 @@ class VsRename < Formula
     assert_match "usage:", shell_output("#{bin}/ren-vs --help")
   end
 
-  caveats <<~EOS
-    #{name} is no longer actively maintained and might not work
-  EOS
+  def caveats
+    <<~EOS
+      #{name} is no longer actively maintained and might not work
+    EOS
+  end
 end
