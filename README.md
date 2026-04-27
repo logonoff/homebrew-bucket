@@ -31,6 +31,7 @@ scoop bucket add logonoff https://github.com/logonoff/homebrew-bucket
 
 | App | Source |
 | --- | ------ |
+| `awakeonlan` | [awake-on-lan](https://github.com/logonoff/awake-on-lan) |
 | `dreamscape-wmp` | [dreamscape-wmp](https://github.com/logonoff/dreamscape-wmp) |
 | `persistentaccent` | [persistentaccent](https://github.com/logonoff/persistentaccent) |
 | `vs-rename` | [vs-rename](https://github.com/logonoff/vs-rename) |
