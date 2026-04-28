@@ -16,6 +16,7 @@ class Awakeonlan < Formula
   depends_on "glib"
   depends_on "gtk4"
   depends_on "libadwaita"
+  depends_on "pygobject3"
   depends_on "python@3.13"
 
   on_macos do
