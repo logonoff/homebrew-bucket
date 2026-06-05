@@ -31,46 +31,56 @@ jobs:
             exit 0
           fi
 
-          UPDATES=$(git diff --name-only | while read -r file; do
+          changed_files=$(git diff --name-only)
+          num_changed=$(echo "$changed_files" | wc -l)
+
+          for file in $changed_files; do
             name=$(basename "${file%.*}")
+            dir=$(dirname "$file")
             if [[ "$file" == *.rb ]]; then
               ver=$(grep -m1 'version "' "$file" | sed 's/.*version "\(.*\)"/\1/')
             elif [[ "$file" == *.json ]]; then
               ver=$(jq -r '.version' "$file")
             fi
-            if [[ -n "$ver" ]]; then
-              echo "$name to $ver"
-            else
-              echo "$name"
+
+            pkg_type=""
+            if [[ "$num_changed" -gt 1 ]]; then
+              case "$dir" in
+                Casks)   pkg_type=" (Homebrew Cask)" ;;
+                Formula) pkg_type=" (Homebrew)" ;;
+                bucket)  pkg_type=" (Scoop)" ;;
+              esac
             fi
-          done | paste -sd ', ' -)
 
-          HEADLINE="chore: update $UPDATES"
+            if [[ -n "$ver" ]]; then
+              HEADLINE="$name: Update to version ${ver}${pkg_type}"
+            else
+              HEADLINE="$name: Update${pkg_type}"
+            fi
 
-          ADDITIONS=$(git diff --name-only | while read -r file; do
             content=$(base64 -w0 < "$file")
-            printf '{"path":"%s","contents":"%s"}' "$file" "$content"
-          done | jq -s '.')
+            ADDITIONS=$(printf '{"path":"%s","contents":"%s"}' "$file" "$content" | jq -s '.')
 
-          HEAD_OID=$(gh api graphql \
-            -f query='{ repository(owner:"logonoff", name:"homebrew-bucket") {
-              ref(qualifiedName:"refs/heads/main") { target { oid } }
-            }}' --jq '.data.repository.ref.target.oid')
+            HEAD_OID=$(gh api graphql \
+              -f query='{ repository(owner:"logonoff", name:"homebrew-bucket") {
+                ref(qualifiedName:"refs/heads/main") { target { oid } }
+              }}' --jq '.data.repository.ref.target.oid')
 
-          jq -n \
-            --arg oid "$HEAD_OID" \
-            --arg headline "$HEADLINE" \
-            --argjson additions "$ADDITIONS" \
-            '{
-              query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }",
-              variables: {
-                input: {
-                  branch: { repositoryNameWithOwner: "logonoff/homebrew-bucket", branchName: "main" },
-                  expectedHeadOid: $oid,
-                  message: { headline: $headline },
-                  fileChanges: { additions: $additions }
+            jq -n \
+              --arg oid "$HEAD_OID" \
+              --arg headline "$HEADLINE" \
+              --argjson additions "$ADDITIONS" \
+              '{
+                query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }",
+                variables: {
+                  input: {
+                    branch: { repositoryNameWithOwner: "logonoff/homebrew-bucket", branchName: "main" },
+                    expectedHeadOid: $oid,
+                    message: { headline: $headline },
+                    fileChanges: { additions: $additions }
+                  }
                 }
-              }
-            }' | gh api graphql --input -
+              }' | gh api graphql --input -
+          done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
