@@ -1,9 +1,8 @@
 cask "superopt" do
-  version "0.6.3"
-  sha256 "5e0ac7de2f414c39a7d88ac4f822b54fb01dd59e67a07a65fffaea45aec1a5d3"
+  version "0.6.4"
+  sha256 "8278a012565a90c7e1a6e132d071205bfffa7fc53eecf72482afd1066b28a34b"
 
-  url "https://github.com/logonoff/superopt/releases/download/#{version}/SuperOpt.zip",
-      verified: "github.com/logonoff/superopt/"
+  url "https://github.com/logonoff/superopt/releases/download/#{version}/SuperOpt.zip"
   name "SuperOpt"
   desc "Muscle memory polyfill for GNOME users"
   homepage "https://logonoff.co/superopt"
@@ -17,9 +16,8 @@ cask "superopt" do
 
   app "SuperOpt.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-rd", "com.apple.quarantine", "#{appdir}/SuperOpt.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-rd", "com.apple.quarantine", "{{appdir}}/SuperOpt.app"]
   end
 
   zap trash: "~/Library/Preferences/co.logonoff.superopt.plist"
